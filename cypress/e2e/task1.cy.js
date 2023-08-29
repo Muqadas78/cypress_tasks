@@ -8,7 +8,7 @@ describe('Form Submission Test', () => {
     // Click on Practice Form button 
     cy.contains('Practice Form').click();
 
-     // Enter form data
+     // Enter form test data
      cy.get('#firstName').type('Cowlar');
      cy.get('#lastName').type('Developer');
      cy.get('#userEmail').type('qaengineer@cowlar.com');
