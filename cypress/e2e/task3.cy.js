@@ -14,23 +14,29 @@ describe('Task3', () => {
       cy.contains('Understanding ECMAScript 6').click();
 
     
+ // Intercept the API call and create alias
+ cy.intercept('GET', 'https://demoqa.com/BookStore/v1/Book?ISBN=9781593277574').as('bookdetails');
 
-      
-      cy.request('GET', 'https://demoqa.com/BookStore/v1/Book?ISBN=9781593277574').as('bookdetails')
-      cy.get('@bookdetails')
-      .its('body')
-      .should('include',{isbn:'9781593277574'})  
-      .should('include',{title: 'Understanding ECMAScript 6'}) 
-      .should('include',{subTitle: 'The Definitive Guide for JavaScript Developers'})
-      .should('include',{ author: 'Nicholas C. Zakas'})
-      .should('include',{ publish_date: '2016-09-03T00:00:00.000Z'})
-      .should('include',{ publisher: 'No Starch Press'})
-      .should('include',{ pages: 352})
-      .should('include',{ description : 'ECMAScript 6 represents the biggest update to the core of JavaScript in the history of the language. In Understanding ECMAScript 6, expert developer Nicholas C. Zakas provides a complete guide to the object types, syntax, and other exciting changes that E'})
-      .should('include',{ website: 'https://leanpub.com/understandinges6/read'})
+ // Visit the page
+ cy.visit('https://demoqa.com/books');
 
-    
-    
+ // Click on book
+ cy.contains('Understanding ECMAScript 6').click();
+ cy.wait('@bookdetails').then((interception) => {
+   const responseBody = interception.response.body;
+
+   expect(responseBody).to.deep.include({
+     isbn: '9781593277574',
+     title: 'Understanding ECMAScript 6',
+     subTitle: 'The Definitive Guide for JavaScript Developers',
+     author: 'Nicholas C. Zakas',
+     publish_date: '2016-09-03T00:00:00.000Z',
+     publisher: 'No Starch Press',
+     pages: 352,
+     description: 'ECMAScript 6 represents the biggest update to the core of JavaScript in the history of the language. In Understanding ECMAScript 6, expert developer Nicholas C. Zakas provides a complete guide to the object types, syntax, and other exciting changes that E',
+     website: 'https://leanpub.com/understandinges6/read'
+   });
+  });
   });
 });
   

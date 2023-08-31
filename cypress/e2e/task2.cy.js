@@ -1,5 +1,5 @@
 describe('Task2', () => {
-    it('verify resizing', () => {
+    it('visit resizable', () => {
       // visit the URL
       cy.visit('https://demoqa.com/');
      
@@ -25,18 +25,27 @@ describe('Task2', () => {
   cy.get('#resizableBoxWithRestriction')
   .should('have.css', 'height', '200px')
   .should('have.css', 'width', '200px');
+    
 
-  
-   //Resizing 
-   cy.get('#resizableBoxWithRestriction')
-   .invoke('attr', 'style', 'min-height: 150px; min-width: 150px; max-height: 300px; max-width: 500px;');
+   //Resizing for max width and height 
+   cy.get('#resizableBoxWithRestriction > span')
+   .trigger('mousedown', { which: 1, clientX: 0, clientY: 0 })
+   .trigger('mousemove', { clientX: 500, clientY: 300 }) // Simulate resizing to a new size
+   .trigger('mouseup', { force: true }); // Release the mouse button
  
- // Verify the properties after setting them
- cy.get('#resizableBoxWithRestriction').should('have.css', 'min-height', '150px');
- cy.get('#resizableBoxWithRestriction').should('have.css', 'min-width', '150px');
- cy.get('#resizableBoxWithRestriction').should('have.css', 'max-height', '300px');
- cy.get('#resizableBoxWithRestriction').should('have.css', 'max-width', '500px');
- cy.end();
+
+ // Verify the properties after resizing
+ cy.get('#resizableBoxWithRestriction').then($box => {
+  const boxHeight = parseFloat($box.css('height'));
+  const boxWidth = parseFloat($box.css('width'));
+
+  // Verify properties after resizing
+  expect(boxHeight).to.be.within(150, 300);
+  expect(boxWidth).to.be.within(150, 500);
+
+
+});
+ 
 });
 
     });
